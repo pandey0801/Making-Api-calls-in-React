@@ -83,13 +83,15 @@ function App() {
     },
   ];
 
-  const [moviesState, setMoviesState] = useState(dummyMovies);
+  const [moviesState, setMoviesState] = useState([]);
+  const [isloading, setisLoading ] = useState(false);
 
-  async function fetchHandler() {
+  async function fetchHandler()
+  {
+    setisLoading(true);
     try {
       const response = await fetch('https://swapi.dev/api/films/');
 
-      console.log(response.ok);
 
       if (!response.ok) {
         throw new Error('Failed to fetch movies');
@@ -106,6 +108,7 @@ function App() {
         };
       });
 
+      setisLoading(false);
       setMoviesState(transformedMovies);
 
     } catch (error) {
@@ -119,11 +122,15 @@ function App() {
         <button onClick={fetchHandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={moviesState} />
+        {!isloading && moviesState.length >0 && <MoviesList movies={moviesState} />}
+        {!isloading && moviesState.length == 0 && <h3>found no movie</h3>}
+        {isloading && <h1>Loading....</h1>}
       </section>
     </React.Fragment>
   );
 }
 
 export default App;
+
+///
 
